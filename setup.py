@@ -8,7 +8,7 @@ setup(
     author='Muhamad Azmy',
     author_email='muhamad.azmy@gmail.com',
     url='https://github.com/muhamadazmy/python-pygo',
-    download_url='https://github.com/muhamadazmy/python-pygo/tarball/0.2',
+    download_url='https://github.com/muhamadazmy/python-pygo/tarball/0.3',
     keywords=['pygo', 'golang', 'go'],
     classifiers=[],
 )
