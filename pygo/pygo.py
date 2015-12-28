@@ -1,7 +1,7 @@
 import os
 import struct
 import json
-import imp
+import importlib
 import traceback
 
 
@@ -11,22 +11,22 @@ CHANNEL_OUT = 4
 HEADER_FMT = '>I'
 HEADER_SIZE = struct.calcsize(HEADER_FMT)
 
+HANDSHAKE = {
+    'state': 'SUCCESS',
+    'version': 1.0
+}
+
 
 def readlen(f, n):
     buffer = bytearray()
     while len(buffer) < n:
         data = f.read(n - len(buffer))
-        if data == '':
-            raise Exception('EOF')
+        if data == b'':
+            raise EOFError()
 
         buffer.extend(data)
 
-    return buffer
-
-HANDSHAKE = {
-    'state': 'SUCCESS',
-    'version': 1.0
-}
+    return bytes(buffer)
 
 
 class Runner(object):
@@ -55,7 +55,7 @@ class Runner(object):
 
     def get_module(self):
         if self.mod is None:
-            self.mod = imp.load_module(self.module, *imp.find_module(self.module))
+            self.mod = importlib.import_module(self.module)
 
         return self.mod
 
@@ -88,6 +88,8 @@ class Runner(object):
             try:
                 call = self.get_next_call()
                 result = self.do_call(call)
+            except EOFError:
+                break
             except:
                 result['return'] = traceback.format_exc()
             finally:
